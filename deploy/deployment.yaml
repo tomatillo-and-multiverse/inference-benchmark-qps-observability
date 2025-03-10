@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: latency-profile-generator
+  namespace: default
+  labels:
+    name: latency-profile-generator
+spec:
+  selector:
+    matchLabels:
+      name: latency-profile-generator
+  template:
+    metadata:
+      labels:
+        name: latency-profile-generator
+    spec:
+      serviceAccountName: default
+      containers:
+        - name: latency-profile-generator
+          image: inference-benchmark:latest
+          command: ["bash", "-c", "./latency_throughput_curve.sh"]
+          env:
+            - name: MODELS
+              value: "google/gemma-2b"
+            - name: TOKENIZER
+              value: "google/gemma-2b"
+            - name: IP
+              value: "0.0.0.0"
+            - name: PORT
+              value: "8000"
+            - name: BACKEND
+              value: vllm # other options are tgi, tensorrt_llm_triton, jetstream to benchmark those model servers
+            - name: PROMPT_DATASET
+              value: "sharegpt"
+            - name: INPUT_LENGTH
+              value: "1024"
+            - name: OUTPUT_LENGTH
+              value: "1024"
+            - name: REQUEST_RATES
+              value: "1,2,4,6,8"
+            - name: BENCHMARK_TIME_SECONDS
+              value: "300"
+            - name: FILE_PREFIX
+              value: "benchmark"
+            - name: OUTPUT_BUCKET # adding a GCS bucket will persist the benchmarking report in GCS.
+              value: ""
+            - name: OUTPUT_BUCKET_FILEPATH
+              value: ""
+            - name: SCRAPE_SERVER_METRICS
+              value: "false"
+            - name: SAVE_AGGREGATED_RESULT
+              value: "false"
+            - name: STREAM_REQUEST
+              value: "false"
+            - name: HF_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: hf-token
+                  key: HF_TOKEN # Create an Opaque secret with HuggingFace API key of the same name
