@@ -725,14 +725,22 @@ def print_metrics(metrics: List[str], duration: float, namespace: str, job: str)
       # handle response
       if request_post.ok:
         if response["status"] == "success" and response["data"] and response["data"]["result"]:
-          metric_results[query_name] = float(response["data"]["result"][0]["value"][1])
-          logger.debug("%s: %s" % (query_name, response["data"]["result"][0]["value"][1]))
+          r = response["data"]["result"]
+          if not r:
+            logger.debug(f"Failed to get result for {query_name}")
+            continue
+          v = r[0].get("value", None)
+          if not v:
+            logger.debug(f"Failed to get value for result: {r}")
+            continue
+          metric_results[query_name] = float(v[1])
+          logger.debug("%s: %s" % (query_name, v[1]))
         else:
           logger.debug("Cloud Monitoring PromQL Error: %s" % (response))
-          return server_metrics
+          continue
       else:
         logger.debug("HTTP Error: %s" % (response))
-        return server_metrics
+        continue
     server_metrics[metric] = metric_results
   return server_metrics
 
