@@ -24,7 +24,6 @@ if [[ "$PROMPT_DATASET" = "sharegpt" ]]; then
 fi
 
 PYTHON="python3"
-PYTHON_OPTS="benchmark_serving.py "
 for request_rate in $(echo $REQUEST_RATES | tr ',' ' '); do
   echo "Benchmarking request rate: ${request_rate}"
   # TODO: Check if profile already exists, if so then skip
@@ -40,7 +39,7 @@ for request_rate in $(echo $REQUEST_RATES | tr ',' ' '); do
   echo "TOTAL prompts: $num_prompts"
   
   # Build the python command options
-  PYTHON_OPTS="$PYTHON_OPTS --save-json-results --host=$IP --port=$PORT --dataset=$PROMPT_DATASET_FILE --tokenizer=$TOKENIZER --request-rate=$request_rate --backend=$BACKEND --num-prompts=$num_prompts --max-input-length=$INPUT_LENGTH --max-output-length=$OUTPUT_LENGTH --file-prefix=$FILE_PREFIX --models=$MODELS --pm-namespace=$PM_NAMESPACE --pm-job=$PM_JOB"
+  PYTHON_OPTS="benchmark_serving.py --save-json-results --host=$IP --port=$PORT --dataset=$PROMPT_DATASET_FILE --tokenizer=$TOKENIZER --request-rate=$request_rate --backend=$BACKEND --num-prompts=$num_prompts --max-input-length=$INPUT_LENGTH --max-output-length=$OUTPUT_LENGTH --file-prefix=$FILE_PREFIX --models=$MODELS --pm-namespace=$PM_NAMESPACE --pm-job=$PM_JOB"
 
   if [[ "$TRAFFIC_SPLIT" ]]; then
     PYTHON_OPTS="$PYTHON_OPTS --traffic-split=$TRAFFIC_SPLIT"
