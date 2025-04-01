@@ -28,7 +28,7 @@ import random
 import requests
 import time
 from typing import AsyncGenerator, List, Optional, Tuple, Dict
-from prometheus_client import start_http_server, Histogram, Gauge
+from prometheus_client import start_http_server, Histogram, Gauge, Counter
 import logging
 
 import google.auth
@@ -53,10 +53,12 @@ request_latency_per_output_token_metric = Histogram('LatencyProfileGenerator:req
 tpot_metric = Histogram('LatencyProfileGenerator:time_per_output_token', 'Time per output token per request (excluding first token)')
 ttft_metric = Histogram('LatencyProfileGenerator:time_to_first_token', 'Time to first token per request')
 active_requests_metric = Gauge('LatencyProfileGenerator:active_requests', 'How many requests actively being processed')
+total_request_count = Counter('LatencyProfileGenerator:request_count', 'How many total requests have been sent')
 
 # Add trace config for monitoring in flight requests
 async def on_request_start(session, trace_config_ctx, params):
     active_requests_metric.inc()
+    total_request_count.inc()
 
 async def on_request_end(session, trace_config_ctx, params):
     active_requests_metric.dec()
@@ -742,6 +744,16 @@ def print_metrics(metrics: List[str], duration: float, namespace: str, job: str)
         logger.debug("HTTP Error: %s" % (response))
         continue
     server_metrics[metric] = metric_results
+
+
+  url='https://monitoring.googleapis.com/v1/projects/%s/location/global/prometheus/api/v1/query' % (project_id)
+  headers_api = {'Authorization': 'Bearer ' + credentials.token}
+  params = {'query': f'rate(LatencyProfileGenerator:request_count_total[{duration}s])'}
+  logger.debug(f"Finding {query_name} {metric} with the following query: {query}")
+  request_post = requests.get(url=url, headers=headers_api, params=params)
+  response = request_post.json()
+  print(f"Got response for benchmarking prom metrics: {response}")
+  
   return server_metrics
 
 def get_stats_for_set(name, description, points):
