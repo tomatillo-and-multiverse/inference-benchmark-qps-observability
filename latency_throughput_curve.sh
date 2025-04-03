@@ -42,7 +42,7 @@ BASE_PYTHON_OPTS=(
 [[ "$TRAFFIC_SPLIT" ]] && BASE_PYTHON_OPTS+=("--traffic-split=$TRAFFIC_SPLIT")
 [[ "$OUTPUT_BUCKET" ]] && BASE_PYTHON_OPTS+=("--output-bucket=$OUTPUT_BUCKET")
 [[ "$MIN_INPUT_LENGTH" ]] && BASE_PYTHON_OPTS+=("--min-input-length=$MIN_INPUT_LENGTH")
-[[ "$MIN_OUPUT_LENGTH" ]] && BASE_PYTHON_OPTS+=("--min-output-length=$MIN_OUPUT_LENGTH")
+[[ "$MIN_OUTPUT_LENGTH" ]] && BASE_PYTHON_OPTS+=("--min-output-length=$MIN_OUTPUT_LENGTH")
 [[ "$SCRAPE_SERVER_METRICS" = "true" ]] && BASE_PYTHON_OPTS+=("--scrape-server-metrics")
 [[ "$SAVE_AGGREGATED_RESULT" = "true" ]] && BASE_PYTHON_OPTS+=("--save-aggregated-result")
 [[ "$STREAM_REQUEST" = "true" ]] && BASE_PYTHON_OPTS+=("--stream-request")

@@ -547,7 +547,7 @@ async def benchmark(
     await print_and_save_result(args, benchmark_duration, benchmark_request_sent_duration, prompts_sent, "weighted",
                           overall_results["latencies"], overall_results["ttfts"],
                           overall_results["itls"], overall_results["tpots"],
-                          overall_results["errors"])
+                          overall_results["errors"], args.scrape_server_metrics)
     for model, data in per_model_results.items():
         await print_and_save_result(args, benchmark_duration, benchmark_request_sent_duration, len(data["latencies"]), model,
                               data["latencies"], data["ttfts"], data["itls"],
@@ -815,7 +815,7 @@ def get_stats_for_set(name, description, points):
     f'p99_{name}': p99,
   }
 
-async def print_and_save_result(args: argparse.Namespace, benchmark_duration, benchmark_request_sent_duration, total_requests, model, request_latencies, ttfts, itls, tpots, errors):
+async def print_and_save_result(args: argparse.Namespace, benchmark_duration, benchmark_request_sent_duration, total_requests, model, request_latencies, ttfts, itls, tpots, errors, scrape_metrics=False):
   benchmark_result = {}
 
   print(f"====Result for Model: {model}====")
@@ -889,7 +889,7 @@ async def print_and_save_result(args: argparse.Namespace, benchmark_duration, be
   }
 
   server_metrics = {}
-  if args.scrape_server_metrics:
+  if scrape_metrics:
     server_metrics = print_metrics(metrics_to_scrape(args.backend), benchmark_duration, args.pm_namespace, args.pm_job)
   if args.save_json_results:
     save_json_results(args, benchmark_result, server_metrics, model, errors)
