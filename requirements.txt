@@ -26,6 +26,7 @@ sentencepiece  # Required for LLaMA tokenizer.
 numpy < 2.0
 torch == 2.1.1
 transformers >= 4.42.0 # Required for Qwen2
+
 xformers == 0.0.23
 fastapi
 uvicorn[standard]
@@ -37,3 +38,8 @@ aiohttp
 google-auth
 google-cloud-storage >= 2.18.2
 prometheus_client >= 0.21.0
+
+datasets
+pandas
+tqdm
+matplotlib

@@ -655,36 +655,13 @@ def metrics_to_scrape(backend: str) -> List[str]:
   # If a value is specified for a given key, it will be populated on the outputs `summary_stats.stats` field as 'value':'stats' as well.
   if backend == "vllm":
     return [
-      "vllm:cpu_cache_usage_perc",
       "vllm:gpu_cache_usage_perc",
 
       "vllm:num_requests_waiting",
       "vllm:num_requests_running",
       "vllm:num_requests_swapped",
-
       "vllm:time_to_first_token_seconds",
       "vllm:time_per_output_token_seconds",
-      "vllm:e2e_request_latency_seconds",
-
-      "vllm:request_prefill_time_seconds",
-      "vllm:request_queue_time_seconds",
-      "vllm:request_decode_time_seconds",
-      "vllm:request_inference_time_seconds",
-      "vllm:time_in_queue_requests",
-
-      "vllm:request_prompt_tokens",
-      "vllm:request_generation_tokens",
-      "vllm:iteration_tokens_total",
-      "vllm:prompt_tokens_total",
-      "vllm:generation_tokens_total",
-      "vllm:request_success_total",
-      "vllm:num_preemptions_total",
-
-      "vllm:cpu_prefix_cache_hit_rate",
-      "vllm:gpu_prefix_cache_hit_rate",
-
-      "vllm:avg_generation_throughput_toks_per_s",
-      "vllm:avg_prompt_throughput_toks_per_s",
     ]
   elif backend == "jetstream":
     return [
